@@ -1,6 +1,6 @@
 <?php
 include_once("config.php");
-
+session_start();
 try {
     if (isset($_POST["submit"])) {
         $email = $_POST["email"];
@@ -14,7 +14,10 @@ try {
         $result = mysqli_query($conexao, "SELECT * FROM usuarios WHERE email = '$email' AND senha = '$senha'");
 
         if (mysqli_num_rows($result) > 0) {
+          $_SESSION["autenticado"] = "SIM";
             header("Location: home.php");
+        }else{
+          $_SESSION["autenticado"] = "NAO";
         }
     }
 } catch (\Throwable $th) {
