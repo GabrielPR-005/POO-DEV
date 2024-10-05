@@ -1,7 +1,40 @@
 <?php
-  require_once("validador_acesso.php");
-?>
+session_start();
+require_once("validador_acesso.php");
+include_once("config.php");
 
+try {
+    if (isset($_POST["submit"])) {
+        $titulo = mysqli_real_escape_string($conexao, $_POST['titulo']);
+        $categoria = mysqli_real_escape_string($conexao, $_POST['categoria']);
+        $descricao = mysqli_real_escape_string($conexao, $_POST['descricao']);
+
+
+        $email = $_SESSION["email"]; 
+        $query_usuario = "SELECT id FROM usuarios WHERE email = '$email'";
+        $result_usuario = mysqli_query($conexao, $query_usuario);
+
+
+        if ($result_usuario && mysqli_num_rows($result_usuario) > 0) {
+            $row_usuario = mysqli_fetch_assoc($result_usuario);
+            $id_usuario = $row_usuario['id']; 
+
+ 
+            $query = "INSERT INTO chamados (titulo, categoria, Descricao, id_usuario) VALUES ('$titulo', '$categoria', '$descricao', '$id_usuario')";
+
+            if (mysqli_query($conexao, $query)) {
+                header("location: consultar_chamado.php");
+            } else {
+                echo "Erro ao adicionar chamado: " . mysqli_error($conexao);
+            }
+        } else {
+            echo "Usuário não encontrado.";
+        }
+    }
+} catch (\Throwable $th) {
+    echo "Ocorreu um erro: " . $th->getMessage();
+}
+?>
 
 <html>
   <head>
@@ -45,15 +78,15 @@
               <div class="row">
                 <div class="col">
                   
-                  <form>
+                  <form action = "abrir_chamado.php" method="POST">
                     <div class="form-group">
                       <label>Título</label>
-                      <input type="text" class="form-control" placeholder="Título">
+                      <input name="titulo" type="text" class="form-control" placeholder="Título">
                     </div>
                     
                     <div class="form-group">
                       <label>Categoria</label>
-                      <select class="form-control">
+                      <select name="categoria" class="form-control">
                         <option>Criação Usuário</option>
                         <option>Impressora</option>
                         <option>Hardware</option>
@@ -64,7 +97,7 @@
                     
                     <div class="form-group">
                       <label>Descrição</label>
-                      <textarea class="form-control" rows="3"></textarea>
+                      <textarea name="descricao" class="form-control" rows="3"></textarea>
                     </div>
 
                     <div class="row mt-5">
@@ -73,7 +106,7 @@
                       </div>
 
                       <div class="col-6">
-                        <button class="btn btn-lg btn-info btn-block" type="submit">Abrir</button>
+                        <button class="btn btn-lg btn-info btn-block" name="submit" type="submit">Abrir</button>
                       </div>
                     </div>
                   </form>

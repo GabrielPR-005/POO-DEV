@@ -14,7 +14,8 @@ try {
         $result = mysqli_query($conexao, "SELECT * FROM usuarios WHERE email = '$email' AND senha = '$senha'");
 
         if (mysqli_num_rows($result) > 0) {
-          $_SESSION["autenticado"] = "SIM";
+            $_SESSION["autenticado"] = "SIM";
+            $_SESSION["email"] = $email;
             header("Location: home.php");
         }else{
           $_SESSION["autenticado"] = "NAO";
