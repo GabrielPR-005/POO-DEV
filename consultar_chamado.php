@@ -1,25 +1,19 @@
 <?php
   require_once("validador_acesso.php");
-  include_once("config.php"); // Inclui a conexão com o banco de dados
+  include_once("config.php"); 
   session_start();
 
-  // Verifica se o usuário está autenticado
-  if (!isset($_SESSION["email"])) {
-      echo "Usuário não autenticado.";
-      exit();
-  }
 
-  // Obter o id_usuario a partir do email da sessão
   $email = $_SESSION["email"];
   $query_usuario = "SELECT id FROM usuarios WHERE email = '$email'";
   $result_usuario = mysqli_query($conexao, $query_usuario);
 
-  // Verifica se o usuário foi encontrado
+
   if ($result_usuario && mysqli_num_rows($result_usuario) > 0) {
       $row_usuario = mysqli_fetch_assoc($result_usuario);
       $id_usuario = $row_usuario['id'];
 
-      // Consulta os chamados deste usuário
+
       $query_chamados = "SELECT * FROM chamados WHERE id_usuario = '$id_usuario'";
       $result_chamados = mysqli_query($conexao, $query_chamados);
   } else {
