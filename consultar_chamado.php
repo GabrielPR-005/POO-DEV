@@ -1,5 +1,31 @@
 <?php
   require_once("validador_acesso.php");
+  include_once("config.php"); // Inclui a conexão com o banco de dados
+  session_start();
+
+  // Verifica se o usuário está autenticado
+  if (!isset($_SESSION["email"])) {
+      echo "Usuário não autenticado.";
+      exit();
+  }
+
+  // Obter o id_usuario a partir do email da sessão
+  $email = $_SESSION["email"];
+  $query_usuario = "SELECT id FROM usuarios WHERE email = '$email'";
+  $result_usuario = mysqli_query($conexao, $query_usuario);
+
+  // Verifica se o usuário foi encontrado
+  if ($result_usuario && mysqli_num_rows($result_usuario) > 0) {
+      $row_usuario = mysqli_fetch_assoc($result_usuario);
+      $id_usuario = $row_usuario['id'];
+
+      // Consulta os chamados deste usuário
+      $query_chamados = "SELECT * FROM chamados WHERE id_usuario = '$id_usuario'";
+      $result_chamados = mysqli_query($conexao, $query_chamados);
+  } else {
+      echo "Usuário não encontrado.";
+      exit();
+  }
 ?>
 
 <html>
@@ -38,38 +64,39 @@
         <div class="card-consultar-chamado">
           <div class="card">
             <div class="card-header">
-              Consulta de chamado
+              Consulta de chamados
             </div>
             
             <div class="card-body">
-              
-              <div class="card mb-3 bg-light">
-                <div class="card-body">
-                  <h5 class="card-title">Título do chamado...</h5>
-                  <h6 class="card-subtitle mb-2 text-muted">Categoria</h6>
-                  <p class="card-text">Descrição do chamado...</p>
-
-                </div>
-              </div>
-
-              <div class="card mb-3 bg-light">
-                <div class="card-body">
-                  <h5 class="card-title">Título do chamado...</h5>
-                  <h6 class="card-subtitle mb-2 text-muted">Categoria</h6>
-                  <p class="card-text">Descrição do chamado...</p>
-
-                </div>
-              </div>
+              <?php
+                if (mysqli_num_rows($result_chamados) > 0) {
+                  // Exibe os chamados do usuário logado
+                  while ($chamado = mysqli_fetch_assoc($result_chamados)) {
+                    echo '<div class="card mb-3 bg-light">';
+                    echo '  <div class="card-body">';
+                    echo '    <h5 class="card-title">' . $chamado['titulo'] . '</h5>';
+                    echo '    <h6 class="card-subtitle mb-2 text-muted">' . $chamado['categoria'] . '</h6>';
+                    echo '    <p class="card-text">' . $chamado['Descricao'] . '</p>';
+                    echo '  </div>';
+                    echo '</div>';
+                  }
+                } else {
+                  echo '<div class="alert alert-warning">Nenhum chamado encontrado.</div>';
+                }
+              ?>
 
               <div class="row mt-5">
                 <div class="col-6">
-                  <a class="btn btn-lg btn-warning btn-block" href = "home.php">Voltar</a>
+                  <a class="btn btn-lg btn-warning btn-block" href="home.php">Voltar</a>
                 </div>
               </div>
+
             </div>
           </div>
         </div>
+
       </div>
     </div>
+
   </body>
 </html>
