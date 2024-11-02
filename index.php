@@ -1,31 +1,25 @@
 <?php
-include_once("config.php");
-session_start();
-try {
-    if (isset($_POST["submit"])) {
-        $email = $_POST["email"];
-        $senha = $_POST["senha"];
-        
+require_once "classes/DatabaseConnection.php";
+require_once "classes/Usuario.php";
+require_once "classes/SessionManager.php";
 
-        $email = mysqli_real_escape_string($conexao, $email);
-        $senha = mysqli_real_escape_string($conexao, $senha);
+SessionManager::iniciarSessao();
 
-       
-        $result = mysqli_query($conexao, "SELECT * FROM usuarios WHERE email = '$email' AND senha = '$senha'");
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    try {
+        $usuario = new Usuario($_POST['email']);
 
-        if (mysqli_num_rows($result) > 0) {
-            $_SESSION["autenticado"] = "SIM";
-            $_SESSION["email"] = $email;
+        if ($usuario->autenticar($_POST['senha'])) {
+            SessionManager::setAutenticado($_POST['email']);
             header("Location: home.php");
-        }else{
-          $_SESSION["autenticado"] = "NAO";
+        } else {
+            echo "Usuário ou senha inválidos.";
         }
+    } catch (Exception $e) {
+        echo "Erro: " . $e->getMessage();
     }
-} catch (\Throwable $th) {
-    echo "Ocorreu um erro: " . $th->getMessage();
 }
 ?>
-
 
 
 <html>

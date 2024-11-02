@@ -1,6 +1,6 @@
 <?php
-  require_once("validador_acesso.php");
-
+  require_once "classes/SessionManager.php";
+  SessionManager::validarAcesso();
 ?>
 
 

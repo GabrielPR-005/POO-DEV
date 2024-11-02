@@ -1,26 +1,22 @@
 <?php
-  require_once("validador_acesso.php");
-  include_once("config.php"); 
-  session_start();
+require_once "classes/SessionManager.php";
+require_once "classes/Usuario.php";
+require_once "classes/Chamado.php";
+require_once "classes/SessionManager.php";
 
+SessionManager::validarAcesso();
 
-  $email = $_SESSION["email"];
-  $query_usuario = "SELECT id FROM usuarios WHERE email = '$email'";
-  $result_usuario = mysqli_query($conexao, $query_usuario);
+try {
+    $usuario = new Usuario(SessionManager::getEmail());
+    $id_usuario = $usuario->getId();
 
-
-  if ($result_usuario && mysqli_num_rows($result_usuario) > 0) {
-      $row_usuario = mysqli_fetch_assoc($result_usuario);
-      $id_usuario = $row_usuario['id'];
-
-
-      $query_chamados = "SELECT * FROM chamados WHERE id_usuario = '$id_usuario'";
-      $result_chamados = mysqli_query($conexao, $query_chamados);
-  } else {
-      echo "Usuário não encontrado.";
-      exit();
-  }
+    $result_chamados = Chamado::consultarChamados($id_usuario);
+} catch (Exception $e) {
+    echo "Erro: " . $e->getMessage();
+    exit();
+}
 ?>
+
 
 <html>
   <head>

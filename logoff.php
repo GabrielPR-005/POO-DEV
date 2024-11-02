@@ -1,6 +1,4 @@
 <?php
-    session_start();
-    
-    session_destroy();
-    header("location: index.php");
+require_once "classes/SessionManager.php";
+SessionManager::encerrarSessao();
 ?>

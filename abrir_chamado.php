@@ -1,38 +1,24 @@
 <?php
-session_start();
-require_once("validador_acesso.php");
-include_once("config.php");
+require_once "classes/SessionManager.php";
+require_once "classes/SessionManager.php";
+SessionManager::validarAcesso();
+require_once "classes/Usuario.php";
+require_once "classes/Chamado.php";
 
-try {
-    if (isset($_POST["submit"])) {
-        $titulo = mysqli_real_escape_string($conexao, $_POST['titulo']);
-        $categoria = mysqli_real_escape_string($conexao, $_POST['categoria']);
-        $descricao = mysqli_real_escape_string($conexao, $_POST['descricao']);
+SessionManager::validarAcesso();
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    try {
+        $usuario = new Usuario(SessionManager::getEmail());
+        $id_usuario = $usuario->getId();
 
-        $email = $_SESSION["email"]; 
-        $query_usuario = "SELECT id FROM usuarios WHERE email = '$email'";
-        $result_usuario = mysqli_query($conexao, $query_usuario);
+        $chamado = new Chamado($_POST['titulo'], $_POST['categoria'], $_POST['descricao']);
+        $chamado->criarChamado($id_usuario);
 
-
-        if ($result_usuario && mysqli_num_rows($result_usuario) > 0) {
-            $row_usuario = mysqli_fetch_assoc($result_usuario);
-            $id_usuario = $row_usuario['id']; 
-
- 
-            $query = "INSERT INTO chamados (titulo, categoria, Descricao, id_usuario) VALUES ('$titulo', '$categoria', '$descricao', '$id_usuario')";
-
-            if (mysqli_query($conexao, $query)) {
-                header("location: consultar_chamado.php");
-            } else {
-                echo "Erro ao adicionar chamado: " . mysqli_error($conexao);
-            }
-        } else {
-            echo "Usuário não encontrado.";
-        }
+        header("Location: consultar_chamado.php");
+    } catch (Exception $e) {
+        echo "Erro: " . $e->getMessage();
     }
-} catch (\Throwable $th) {
-    echo "Ocorreu um erro: " . $th->getMessage();
 }
 ?>
 
