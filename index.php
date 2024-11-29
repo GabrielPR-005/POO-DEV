@@ -10,8 +10,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $usuario = new Usuario($_POST['email']);
 
         if ($usuario->autenticar($_POST['senha'])) {
-            SessionManager::setAutenticado($_POST['email']);
-            header("Location: home.php");
+            $tipoUsuario = $usuario->getTipo();
+            SessionManager::setAutenticado($_POST['email'], $tipoUsuario);
+
+            if ($tipoUsuario === 'cliente') {
+                header("Location: home_cliente.php");
+            } elseif ($tipoUsuario === 'tecnico') {
+                header("Location: home_tecnico.php");
+            } elseif ($tipoUsuario === 'admin') {
+                header("Location: home_admin.php");
+            }
+            exit();
         } else {
             echo "Usuário ou senha inválidos.";
         }
@@ -20,7 +29,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-
 
 <html>
   <head>
