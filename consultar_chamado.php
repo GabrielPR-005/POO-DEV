@@ -60,7 +60,7 @@ try {
               <?php
               if (count($chamados) > 0) {
                 foreach ($chamados as $chamadoData) {
-                  // Criar uma instância de Chamado para utilizar os métodos de instância
+
                   $chamado = new Chamado($chamadoData['id']);
 
                   echo '<div class="card mb-3 bg-light">';
