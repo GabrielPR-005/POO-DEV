@@ -4,7 +4,7 @@ require_once "classes/SessionManager.php";
 require_once "classes/Usuario.php";
 require_once "classes/Chamado.php";
 
-SessionManager::validarAcesso(['tecnico']); // Only technicians can access this page
+SessionManager::validarAcesso(['tecnico']); 
 
 try {
     $usuario = new Usuario(SessionManager::getEmail());
