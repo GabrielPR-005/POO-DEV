@@ -30,7 +30,7 @@ try {
   <head>
     <meta charset="utf-8" />
     <title>Atribuir Chamado</title>
-    <!-- Inclua o Bootstrap CSS -->
+
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <style>
       .card-atribuir-chamado {
@@ -90,7 +90,7 @@ try {
       </div>
     </div>
 
-    <!-- Inclua o Bootstrap JS (opcional) -->
+
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
   </body>
 </html>
