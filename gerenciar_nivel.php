@@ -11,13 +11,13 @@ SessionManager::validarAcesso(['admin']);
 
 $admin = new Admin(SessionManager::getEmail());
 
-// Obtendo os chamados com seus níveis, excluindo os finalizados
+
 $conexao = (new DatabaseConnection())->getConexao();
 $query = "SELECT id, titulo, nivel FROM chamados WHERE status != 'finalizado'";
 $result = $conexao->query($query);
 $chamados = $result->fetch_all(MYSQLI_ASSOC);
 
-// Processando alterações de nível
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao']) && $_POST['acao'] === 'alterar') {
     try {
         $id_chamado = $_POST['id_chamado'];
