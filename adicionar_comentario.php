@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $chamado = new Chamado($id_chamado);
 
-        // Verifica se o usuário tem permissão para comentar
+
         if ($tipo_usuario === 'cliente' && $chamado->getIdUsuario() != $id_usuario) {
             throw new Exception("Você não tem permissão para comentar neste chamado.");
         } elseif ($tipo_usuario === 'tecnico' && $chamado->getTecnicoId() != $id_usuario) {
